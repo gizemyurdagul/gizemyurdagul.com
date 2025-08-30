@@ -129,6 +129,8 @@
           link.classList.add('active');
 
           moveIndicator();
+
+          sessionStorage.setItem('source', link.dataset.page);
           switchPage(link.dataset.page);
         });
       });
@@ -142,7 +144,6 @@
           navLinks.forEach(l => l.classList.remove('active'));
           refLink.classList.add('active');
         }
-        sessionStorage.removeItem('source');
 
         // Set initial page based on the active link
         currentPageId = document.querySelector('.nav-link.active').dataset.page;
