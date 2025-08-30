@@ -1,20 +1,26 @@
-{% extends "base.html" %}
+{% extends "projects.html" %}
 
-{% block content %}
-<h1>
-  {{ section.title }}
-</h1>
+{% block blog %}
+{% block index %}
+{% endblock index %}
 
-<main class="bento-grid">
-  {% for page in section.pages %}
-    <div class="bento-item item-social">
-        <h2><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h2>
-        <p style="color: var(--secondary-text); margin-top: 0;">
+{% set section = get_section(path="blog/_index.md") %}
+<!-- Blog Sayfası -->
+<section id="blog-content" class="page-content hidden">
+  <div class="blog-grid">
+    {% for page in section.pages %}
+    <!-- Blog Post 3 -->
+    <div class="bento-item blog-card">
+      <img src="https://placehold.co/600x400/4682b4/ffffff?text={{ page.title }}" alt="Blog Post 3"
+        class="blog-card-image">
+      <h2><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h2>
+      <p style="color: var(--secondary-text); margin-top: 0;">
         {% if page.description %}{{ page.description }}{% else %}{% endif %}
-
-        </p>
+      </p>
+        <a href="{{ page.permalink | safe }}" class="read-more">Read More &rarr;</a>
     </div>
-  {% endfor %}
-</main>
+    {% endfor %}
+  </div>
+</section>
 
-{% endblock content %}
+{% endblock blog %}

@@ -1,5 +1,5 @@
 +++
-title = "Blog"
+title = "Projects"
 template = "index.html"
 page_template = "post.html"
 redirect_to = "/"

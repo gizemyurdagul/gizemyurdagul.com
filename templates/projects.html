@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{% block blog %}
+{% endblock blog %}
+
+{% set section = get_section(path="projects/_index.md") %}
+
+<!-- Projeler Sayfası -->
+<section id="projects-content" class="page-content hidden">
+  <div class="project-grid">
+    {% for page in section.pages %}
+    <!-- Project Post -->
+    <div class="bento-item project-card">
+      <h4><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h4>
+      <p>Led the development of a new client management system, resulting in a 20% increase in efficiency.</p>
+      <div class="tags">
+        <span>Agile</span>
+        <span>CRM</span>
+        <span>Scrum</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock content %}

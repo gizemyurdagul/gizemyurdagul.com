@@ -16,11 +16,10 @@
   <!-- Navigasyon Menüsü -->
   <header class="navbar">
     <div class="nav-container">
+      <a href="/" class="back-button theme-toggle" title="Back">←</a>
       <ul class="nav-links">
         <div class="active-indicator"></div>
-        <li><a class="nav-link active" data-page="about">About</a></li>
-        <li><a class="nav-link" data-page="blog">Blog</a></li>
-        <li><a class="nav-link" data-page="projects">Projects</a></li>
+        <li><a class="nav-link active">{{ page.relative_path | split(pat="/") | first | capitalize() }}</a></li>
       </ul>
       <!-- Dark Mode Toggle Button -->
       <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
@@ -46,22 +45,18 @@
 
   <!-- Ana İçerik Alanı -->
   <main>
-    {% block content %}
-    {% endblock content %}
+    <h1>{{ page.title | safe }}</h1>
+    {{ page.content | safe }}
   </main>
 
 
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const navLinks = document.querySelectorAll('.nav-link');
       const activeIndicator = document.querySelector('.active-indicator');
       const navList = document.querySelector('.nav-links');
       const themeToggle = document.getElementById('theme-toggle');
 
-      const animationDuration = 100; // Must match CSS animation duration
-      let isTransitioning = false;
-      let currentPageId = 'about';
 
       // --- THEME TOGGLE LOGIC ---
       themeToggle.addEventListener('click', () => {
@@ -91,68 +86,9 @@
         activeIndicator.style.left = `${linkRect.left - navListRect.left}px`;
       }
 
-      function switchPage(targetPageId) {
-        if (isTransitioning || targetPageId === currentPageId) return;
-
-        isTransitioning = true;
-        const currentPage = document.getElementById(`${currentPageId}-content`);
-        const targetPage = document.getElementById(`${targetPageId}-content`);
-
-        if (currentPage) {
-          currentPage.classList.add('fade-out');
-        }
-
-        setTimeout(() => {
-          if (currentPage) {
-            currentPage.classList.add('hidden');
-            currentPage.classList.remove('fade-out');
-          }
-
-          targetPage.classList.remove('hidden');
-          targetPage.classList.add('fade-in');
-          currentPageId = targetPageId;
-
-          setTimeout(() => {
-            targetPage.classList.remove('fade-in');
-            isTransitioning = false;
-          }, animationDuration);
-
-        }, animationDuration);
-      }
-
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (link.classList.contains('active') || isTransitioning) return;
-
-          navLinks.forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-
-          moveIndicator();
-          switchPage(link.dataset.page);
-        });
-      });
-
       function initializePage() {
+        sessionStorage.setItem('source', (new URL(location.href)).pathname.split("/")[1]);
         applySavedTheme(); // Check for dark mode first
-
-        const refPage = sessionStorage.getItem('source');
-        if (refPage) {
-          const refLink = document.querySelector(`[data-page="${refPage}"]`);
-          navLinks.forEach(l => l.classList.remove('active'));
-          refLink.classList.add('active');
-        }
-        sessionStorage.removeItem('source');
-
-        // Set initial page based on the active link
-        currentPageId = document.querySelector('.nav-link.active').dataset.page;
-        document.querySelectorAll('.page-content').forEach(page => {
-          if (page.id !== `${currentPageId}-content`) {
-            page.classList.add('hidden');
-          } else {
-            page.classList.remove('hidden');
-          }
-        });
 
         // Set the indicator position on load
         moveIndicator();
