@@ -1,0 +1,497 @@
+/*  * RENK PALETİ VE TEMEL DEĞİŞKENLER
+    * Kullanıcının belirttiği renk paletini ve diğer stil değişkenlerini burada tanımlıyoruz.
+*/
+:root {
+	--background: #f8f9fa;
+	--surface: #ffffff;
+	--accent1: #ff6a88;
+	/* Canlı Pembe */
+	--accent2: #ff9a8b;
+	/* Sıcak Turuncu */
+	--primary-text: #343a40;
+	--secondary-text: #6c757d;
+	--shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+	--border-radius: 16px;
+	--transition-speed: 0.3s;
+}
+
+/*  * DARK MODE STYLES
+    * Added dark mode color palette.
+*/
+body.dark-mode {
+	--background: #121212;
+	--surface: #1e1e1e;
+	--primary-text: #e0e0e0;
+	--secondary-text: #a0a0a0;
+	--shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/*  * TEMEL SAYFA STİLLERİ
+* Sayfanın genel görünümünü, fontunu ve arkaplan rengini ayarlıyoruz.
+*/
+body {
+	font-family: 'Inter', sans-serif;
+	background-color: var(--background);
+	color: var(--primary-text);
+	margin: 0;
+	padding: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-height: 100vh;
+	box-sizing: border-box;
+	transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+/* * NAVİGASYON BARI (YENİLENMİŞ STİL)
+     * Sayfanın üst kısmındaki menüye daha şık bir görünüm kazandırıyoruz.
+     */
+.navbar {
+	width: 100%;
+	max-width: 1200px;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 50px;
+	/* Boşluk artırıldı */
+}
+
+.nav-container {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	/* Space between nav and toggle */
+}
+
+.nav-links {
+	display: flex;
+	background-color: var(--surface);
+	padding: 12px;
+	/* İç boşluk artırıldı */
+	border-radius: 999px;
+	/* Tamamen yuvarlak kenarlar için */
+	box-shadow: var(--shadow);
+	list-style: none;
+	margin: 0;
+	border: 1px solid #f0f0f0;
+	/* İnce bir kenarlık eklendi */
+	position: relative;
+	transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+body.dark-mode .nav-links {
+	border-color: #2c2c2c;
+}
+
+.nav-links li a {
+	padding: 14px 28px;
+	/* Buton boyutu büyütüldü */
+	text-decoration: none;
+	color: var(--secondary-text);
+	font-weight: 500;
+	border-radius: 999px;
+	transition: all var(--transition-speed) ease;
+	position: relative;
+	z-index: 2;
+	cursor: pointer;
+}
+
+.nav-links li a.active {
+	color: white;
+}
+
+body.dark-mode .nav-links li a.active {
+	color: #1e1e1e;
+}
+
+.nav-links li a:hover {
+	color: var(--primary-text);
+}
+
+.nav-links .active-indicator {
+	position: absolute;
+	height: calc(100% - 16px);
+	top: 8px;
+	left: 8px;
+	/* Başlangıç pozisyonu */
+	width: 90px;
+	/* Genişlik JS ile ayarlanacak */
+	background: linear-gradient(90deg, var(--accent2), var(--accent1));
+	border-radius: 999px;
+	transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+	/* Yumuşak geçiş efekti */
+	z-index: 1;
+}
+
+.back-button {
+	left: -20px;
+	font-size: 24px;
+	text-decoration: none;
+	color: var(--primary-text);
+	line-height: 1;
+}
+
+/* * THEME TOGGLE BUTTON
+     * Style for the new dark mode toggle.
+     */
+.theme-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--surface);
+	border-radius: 999px;
+	box-shadow: var(--shadow);
+	border: 1px solid #f0f0f0;
+	width: 52px;
+	height: 52px;
+	cursor: pointer;
+	padding: 0;
+	transition: all var(--transition-speed) ease;
+}
+
+body.dark-mode .theme-toggle {
+	border-color: #2c2c2c;
+}
+
+.theme-toggle:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle svg {
+	width: 22px;
+	height: 22px;
+	color: var(--secondary-text);
+	transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.theme-toggle .moon-icon {
+	display: none;
+	transform: rotate(-90deg);
+}
+
+.theme-toggle .sun-icon {
+	display: block;
+	transform: rotate(0deg);
+}
+
+body.dark-mode .theme-toggle .moon-icon {
+	display: block;
+	transform: rotate(0deg);
+}
+
+body.dark-mode .theme-toggle .sun-icon {
+	display: none;
+	transform: rotate(90deg);
+}
+
+
+/* * SAYFA İÇERİK GÖRÜNÜRLÜĞÜ
+     * Sayfa bölümlerini göstermek ve gizlemek için kullanılır.
+     */
+.page-content {
+	width: 100%;
+	max-width: 1200px;
+}
+
+.hidden {
+	display: none;
+}
+
+
+/* * BENTO GRID ANA KONTEYNERİ
+     * CSS Grid kullanarak esnek ve modern bir kutu yapısı oluşturuyoruz.
+     */
+.bento-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+	width: 100%;
+}
+
+/* * BENTO KUTULARI (GENEL STİL)
+     * Tüm kutuların ortak stil özelliklerini burada belirliyoruz.
+     */
+.bento-item {
+	background-color: var(--surface);
+	border-radius: var(--border-radius);
+	box-shadow: var(--shadow);
+	padding: 24px;
+	transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, background-color var(--transition-speed) ease;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bento-item:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .bento-item:hover {
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+/* * KUTULARIN GRID İÇİNDEKİ YERLEŞİMİ
+     * Hangi kutunun ne kadar alan kaplayacağını belirliyoruz.
+     */
+.item-about {
+	grid-column: span 2;
+	grid-row: span 2;
+}
+
+.item-location {
+	grid-column: span 2;
+}
+
+.item-hobby {
+	grid-row: span 2;
+}
+
+.item-social {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+/* * KUTU İÇİ ELEMANLAR
+     * Kutuların içindeki başlık, metin, resim gibi elemanların stilleri.
+     */
+.profile-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.profile-pic {
+	width: 70px;
+	height: 70px;
+	border-radius: 50%;
+	margin-right: 20px;
+	object-fit: cover;
+	border: 3px solid var(--surface);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info h1 {
+	margin: 0;
+	font-size: 1.8rem;
+	color: var(--primary-text);
+}
+
+.profile-info p {
+	margin: 0;
+	color: var(--secondary-text);
+}
+
+.about-text {
+	font-size: 1rem;
+	line-height: 1.6;
+	color: var(--secondary-text);
+}
+
+.social-links {
+	margin-top: auto;
+	padding-top: 20px;
+	display: flex;
+	gap: 20px;
+}
+
+.social-links a {
+	color: var(--secondary-text);
+	text-decoration: none;
+	transition: color var(--transition-speed) ease;
+}
+
+.social-links a svg {
+	width: 24px;
+	height: 24px;
+}
+
+.social-links a:hover {
+	color: var(--accent1);
+}
+
+.bento-item h2 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-size: 1.2rem;
+	color: var(--primary-text);
+}
+
+.map-placeholder,
+.hobby-image-placeholder {
+	background: #e9ecef;
+	border-radius: 10px;
+	transition: background-color var(--transition-speed) ease;
+}
+
+body.dark-mode .map-placeholder,
+body.dark-mode .hobby-image-placeholder {
+	background: #2c2c2c;
+}
+
+.map-placeholder {
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 2rem;
+}
+
+.hobby-image-placeholder {
+	width: 100%;
+	height: 200px;
+	margin-top: 15px;
+}
+
+/* * BLOG & PROJE GRIDLERİ
+     * Blog ve proje sayfaları için özel grid yapıları.
+     */
+.blog-grid,
+.project-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+	width: 100%;
+}
+
+.blog-card-image {
+	width: 100%;
+	border-radius: var(--border-radius);
+	margin-bottom: 15px;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+}
+
+.blog-card h3 {
+	margin-top: 0;
+	font-size: 1.2rem;
+}
+
+.blog-card p {
+	color: var(--secondary-text);
+	flex-grow: 1;
+}
+
+.read-more {
+	text-decoration: none;
+	color: var(--accent1);
+	font-weight: 500;
+	align-self: flex-end;
+	transition: transform var(--transition-speed) ease;
+}
+
+.read-more:hover {
+	transform: translateX(5px);
+}
+
+.project-card h4 {
+	margin-top: 0;
+	font-size: 1.3rem;
+	background: linear-gradient(90deg, var(--accent2), var(--accent1));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	color: transparent;
+}
+
+.project-card p {
+	color: var(--secondary-text);
+	flex-grow: 1;
+}
+
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 15px;
+}
+
+.tags span {
+	background-color: #e9ecef;
+	padding: 5px 12px;
+	border-radius: 999px;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: var(--secondary-text);
+	transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+body.dark-mode .tags span {
+	background-color: #2c2c2c;
+}
+
+/* * SAYFA GEÇİŞ ANİMASYONLARI (IMPROVED)
+     * Simplified fade animations to prevent layout shifts.
+     */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+.page-content.fade-in {
+	animation: fadeIn 0.4s ease-out forwards;
+}
+
+.page-content.fade-out {
+	animation: fadeOut 0.4s ease-in forwards;
+}
+
+
+/* * RESPONSIVE TASARIM (MOBİL UYUMLULUK)
+     * Ekran küçüldüğünde grid yapısını tek sütuna dönüştürüyoruz.
+     */
+@media (max-width: 992px) {
+	.bento-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.item-about,
+	.item-location,
+	.item-hobby,
+	.item-social {
+		grid-column: span 1;
+		grid-row: span 1;
+	}
+
+	.item-about {
+		grid-column: span 2;
+	}
+}
+
+@media (max-width: 768px) {
+	body {
+		padding: 20px;
+	}
+
+	.bento-grid,
+	.blog-grid,
+	.project-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.item-about,
+	.item-location,
+	.item-hobby,
+	.item-social {
+		grid-column: span 1;
+		grid-row: span 1;
+	}
+}
