@@ -1,0 +1,105 @@
+---
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+	const blogPosts = await getCollection('blog');
+	return blogPosts.map((post) => ({
+		params: { slug: post.slug },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<PostLayout title={post.data.title} pageType="blog">
+	<article class="post-article">
+		{post.data.image && (
+			<img src={post.data.image} alt={post.data.title} class="featured-image" />
+		)}
+		<h1>{post.data.title}</h1>
+		{post.data.description && (
+			<p class="description">{post.data.description}</p>
+		)}
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+</PostLayout>
+
+<style>
+	.post-article {
+		background-color: var(--surface);
+		border-radius: var(--border-radius);
+		padding: 40px;
+		box-shadow: var(--shadow);
+	}
+
+	.featured-image {
+		width: 100%;
+		border-radius: var(--border-radius);
+		margin-bottom: 30px;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+
+	h1 {
+		color: var(--primary-text);
+		margin-top: 0;
+		margin-bottom: 10px;
+		font-size: 2.5rem;
+	}
+
+	.description {
+		color: var(--secondary-text);
+		font-size: 1.1rem;
+		margin-bottom: 30px;
+		padding-bottom: 30px;
+		border-bottom: 1px solid #e9ecef;
+	}
+
+	body.dark-mode .description {
+		border-bottom-color: #2c2c2c;
+	}
+
+	.prose {
+		color: var(--primary-text);
+		line-height: 1.8;
+		font-size: 1.05rem;
+	}
+	
+	.prose :global(p) {
+		margin-bottom: 1.5rem;
+	}
+	
+	.prose :global(h2) {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		color: var(--primary-text);
+	}
+	
+	.prose :global(a) {
+		color: var(--accent1);
+		text-decoration: none;
+	}
+	
+	.prose :global(a:hover) {
+		text-decoration: underline;
+	}
+
+	@media (max-width: 768px) {
+		.post-article {
+			padding: 30px 20px;
+		}
+
+		h1 {
+			font-size: 2rem;
+		}
+
+		.description {
+			font-size: 1rem;
+		}
+	}
+</style>

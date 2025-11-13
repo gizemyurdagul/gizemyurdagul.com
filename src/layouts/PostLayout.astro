@@ -1,0 +1,126 @@
+---
+interface Props {
+	title: string;
+	pageType?: 'blog' | 'projects';
+}
+
+const { title, pageType = 'blog' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<!-- Navigation -->
+		<header class="navbar">
+			<div class="nav-container">
+				<a href="/" class="back-button" title="Back" onclick="sessionStorage.removeItem('source')">←</a>
+				<ul class="nav-links">
+					<div class="active-indicator"></div>
+					<li><a class="nav-link active">{pageType === 'blog' ? 'Blog' : 'Projects'}</a></li>
+				</ul>
+				<!-- Dark Mode Toggle Button -->
+				<button id="theme-toggle" class="theme-toggle" title="Toggle theme">
+					<svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+						stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="5"></circle>
+						<line x1="12" y1="1" x2="12" y2="3"></line>
+						<line x1="12" y1="21" x2="12" y2="23"></line>
+						<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+						<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+						<line x1="1" y1="12" x2="3" y2="12"></line>
+						<line x1="21" y1="12" x2="23" y2="12"></line>
+						<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+						<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+					</svg>
+					<svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+						stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+					</svg>
+				</button>
+			</div>
+		</header>
+
+		<!-- Main Content -->
+		<main>
+			<slot />
+		</main>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const activeIndicator = document.querySelector('.active-indicator');
+				const navList = document.querySelector('.nav-links');
+				const themeToggle = document.getElementById('theme-toggle');
+
+				function applySavedTheme() {
+					const savedTheme = localStorage.getItem('theme');
+					if (savedTheme === 'dark') {
+						document.body.classList.add('dark-mode');
+					}
+				}
+
+				themeToggle?.addEventListener('click', () => {
+					document.body.classList.toggle('dark-mode');
+					const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+					localStorage.setItem('theme', theme);
+				});
+
+				function moveIndicator() {
+					const activeLink = document.querySelector('.nav-link.active');
+					if (!activeLink || !activeIndicator || !navList) return;
+
+					const linkRect = activeLink.getBoundingClientRect();
+					const navListRect = navList.getBoundingClientRect();
+
+					(activeIndicator as HTMLElement).style.width = `${linkRect.width}px`;
+					(activeIndicator as HTMLElement).style.left = `${linkRect.left - navListRect.left}px`;
+				}
+
+				function initializePage() {
+					const pathname = window.location.pathname;
+					const pageType = pathname.split('/')[1];
+					if (pageType) {
+						sessionStorage.setItem('source', pageType);
+					}
+					
+					applySavedTheme();
+					moveIndicator();
+				}
+
+				initializePage();
+				window.addEventListener('resize', moveIndicator);
+			});
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	@import '../styles/global.css';
+</style>
+
+<style>
+	main {
+		width: 100%;
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 40px 20px;
+	}
+
+	.back-button {
+		text-decoration: none;
+		color: var(--primary-text);
+		font-size: 1.2rem;
+		transition: transform var(--transition-speed) ease;
+	}
+
+	.back-button:hover {
+		transform: translateX(-3px);
+	}
+</style>

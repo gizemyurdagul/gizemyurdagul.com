@@ -1,0 +1,123 @@
+---
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({
+		params: { slug: project.slug },
+		props: { project },
+	}));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<PostLayout title={project.data.title} pageType="projects">
+	<article class="project-article">
+		<h1>{project.data.title}</h1>
+		<p class="description">{project.data.description}</p>
+		{project.data.tags && (
+			<div class="tags">
+				{project.data.tags.map((tag) => (
+					<span>{tag}</span>
+				))}
+			</div>
+		)}
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+</PostLayout>
+
+<style>
+	.project-article {
+		background-color: var(--surface);
+		border-radius: var(--border-radius);
+		padding: 40px;
+		box-shadow: var(--shadow);
+	}
+
+	h1 {
+		margin-top: 0;
+		margin-bottom: 10px;
+		font-size: 2.5rem;
+		background: linear-gradient(90deg, var(--accent2), var(--accent1));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		color: transparent;
+	}
+
+	.description {
+		color: var(--secondary-text);
+		font-size: 1.1rem;
+		margin-bottom: 20px;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 30px;
+		padding-bottom: 30px;
+		border-bottom: 1px solid #e9ecef;
+	}
+
+	body.dark-mode .tags {
+		border-bottom-color: #2c2c2c;
+	}
+
+	.tags span {
+		background-color: #e9ecef;
+		padding: 8px 16px;
+		border-radius: 999px;
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: var(--secondary-text);
+	}
+
+	body.dark-mode .tags span {
+		background-color: #2c2c2c;
+	}
+
+	.prose {
+		color: var(--primary-text);
+		line-height: 1.8;
+		font-size: 1.05rem;
+	}
+	
+	.prose :global(p) {
+		margin-bottom: 1.5rem;
+	}
+	
+	.prose :global(h2) {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		color: var(--primary-text);
+	}
+	
+	.prose :global(a) {
+		color: var(--accent1);
+		text-decoration: none;
+	}
+	
+	.prose :global(a:hover) {
+		text-decoration: underline;
+	}
+
+	@media (max-width: 768px) {
+		.project-article {
+			padding: 30px 20px;
+		}
+
+		h1 {
+			font-size: 2rem;
+		}
+
+		.description {
+			font-size: 1rem;
+		}
+	}
+</style>

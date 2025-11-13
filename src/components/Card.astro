@@ -1,0 +1,16 @@
+---
+interface Props {
+	colSpan?: number;
+	rowSpan?: number;
+	class?: string;
+}
+
+const { colSpan = 1, rowSpan = 1, class: className = '' } = Astro.props;
+---
+
+<div 
+	class={`bento-item ${className}`}
+	style={`grid-column: span ${colSpan}; grid-row: span ${rowSpan};`}
+>
+	<slot />
+</div>

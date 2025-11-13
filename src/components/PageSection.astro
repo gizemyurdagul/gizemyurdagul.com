@@ -1,0 +1,14 @@
+---
+interface Props {
+	id: string;
+	hidden?: boolean;
+}
+
+const { id, hidden = false } = Astro.props;
+---
+
+<section id={`${id}-content`} class={`page-content ${hidden ? 'hidden' : ''}`}>
+	<div class="bento-grid">
+		<slot />
+	</div>
+</section>
