@@ -16,8 +16,9 @@ const { Content } = await project.render();
 
 <PostLayout title={project.data.title} pageType="projects">
 	<article class="project-article">
+
 		<h1>{project.data.title}</h1>
-		<p class="description">{project.data.description}</p>
+		<p class="description">{project.data.date}</p>
 		{project.data.tags && (
 			<div class="tags">
 				{project.data.tags.map((tag) => (

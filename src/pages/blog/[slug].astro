@@ -20,9 +20,13 @@ const { Content } = await post.render();
 			<img src={post.data.image} alt={post.data.title} class="featured-image" />
 		)}
 		<h1>{post.data.title}</h1>
-		{post.data.description && (
-			<p class="description">{post.data.description}</p>
-		)}
+		<p class="description">
+			{post.data.date.toLocaleDateString('tr-TR', {
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+			})}
+		</p>
 		<div class="prose">
 			<Content />
 		</div>
@@ -87,6 +91,14 @@ const { Content } = await post.render();
 	
 	.prose :global(a:hover) {
 		text-decoration: underline;
+	}
+
+	.prose :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: var(--border-radius);
+		margin: 1.5rem auto;
+		display: block;
 	}
 
 	@media (max-width: 768px) {
