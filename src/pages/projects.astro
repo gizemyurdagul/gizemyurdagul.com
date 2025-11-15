@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import PageSection from "../components/PageSection.astro";
+import Card from "../components/Card.astro";
+import Layout from "../layouts/Layout.astro";
+
+const projects = await getCollection("projects");
+---
+
+<Layout>
+        <!-- Projeler Sayfası -->
+        <PageSection id="projects">
+            {
+                projects.map((project) => (
+                    <Card>
+                        <h2>
+                            <a href={`/projects/${project.slug}/`}>
+                                {project.data.title}
+                            </a>
+                        </h2>
+                        <p style="color: var(--secondary-text);">
+                            {project.data.description}
+                        </p>
+                        {project.data.tags && (
+                            <div class="tags">
+                                {project.data.tags.map((tag) => (
+                                    <span>{tag}</span>
+                                ))}
+                            </div>
+                        )}
+                    </Card>
+                ))
+            }
+        </PageSection>
+
+</Layout>

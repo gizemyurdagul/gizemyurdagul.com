@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+import PageSection from "../components/PageSection.astro";
+import Card from "../components/Card.astro";
+import Layout from "../layouts/Layout.astro";
+
+const blogPosts = await getCollection("blog");
+---
+
+<Layout>
+        <!-- Blog Sayfası -->
+        <PageSection id="blog">
+            {
+                blogPosts.map((post) => (
+                    <Card colSpan={post.data.image ? 2 : 1} rowSpan={post.data.image ? 2 : 1}>
+                        {post.data.image && (
+                            <img src={post.data.image} alt={post.data.title} style="max-width: 16rem;"/>
+                        )}
+                        <h2>
+                            <a href={`/blog/${post.slug}/`}>
+                                {post.data.title}
+                            </a>
+                        </h2>
+                        <p style="color: var(--secondary-text); margin-top: 0;">
+                            {post.data.description}
+                        </p>
+                        <a href={`/blog/${post.slug}/`} class="read-more">
+                            Read More &rarr;
+                        </a>
+                    </Card>
+                ))
+            }
+        </PageSection>
+
+</Layout>
