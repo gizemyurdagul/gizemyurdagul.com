@@ -31,7 +31,6 @@ body {
 	align-items: center;
 	min-height: 100vh;
 	box-sizing: border-box;
-	transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 @media (max-width: 768px) {

@@ -14,12 +14,10 @@ const {
   title = siteConfig.title,
   description = siteConfig.description,
 } = Astro.props;
-const cookieTheme = Astro.cookies.get("theme-preference")?.value;
-const initialTheme = cookieTheme === "dark" ? "dark" : "light";
 ---
 
 <!doctype html>
-<html lang="en" data-theme={initialTheme} style={`color-scheme: ${initialTheme};`}>
+<html lang="en">
   <head>
     <BaseHead title={title} description={description} />
     <ThemeScript />

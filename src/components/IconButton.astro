@@ -2,54 +2,63 @@
 const { title, onclick, id, class: extraClasses, href, ...attrs } = Astro.props;
 ---
 
-{href ? (
-  <a {...attrs} {id} class:list={["icon-button", extraClasses]} title={title} href={href}>
-    <slot />
-  </a>
-) : (
-  <button
-    {...attrs}
-    type="button"
-    {id}
-    class:list={["icon-button", extraClasses]}
-    title={title}
-    {onclick}
-  >
-    <slot />
-  </button>
-)}
+{
+  href ? (
+    <a
+      {...attrs}
+      {id}
+      class:list={["icon-button", extraClasses]}
+      title={title}
+      href={href}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button
+      {...attrs}
+      type="button"
+      {id}
+      class:list={["icon-button", extraClasses]}
+      title={title}
+      {onclick}
+    >
+      <slot />
+    </button>
+  )
+}
 
 <style>
-.icon-button {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: var(--surface);
-	border-radius: 999px;
-	box-shadow: var(--shadow);
-	border: 1px solid #f0f0f0;
-	width: 52px;
-	height: 52px;
-	cursor: pointer;
-	padding: 0;
-	transition: all var(--transition-speed) ease;
-  box-sizing: border-box;
-	text-decoration: none;
-}
+  .icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    border: 1px solid #f0f0f0;
+    width: 52px;
+    height: 52px;
+    cursor: pointer;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+  }
 
-:global(html[data-theme="dark"]) .icon-button {
-	border-color: #2c2c2c;
-}
+  :global(html[data-theme="dark"]) .icon-button {
+    border-color: #2c2c2c;
+  }
 
-.icon-button:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
+  .icon-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
 
-.icon-button :global(svg) {
-	width: 22px;
-	height: 22px;
-	color: var(--secondary-text);
-	transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
-}
+  .icon-button :global(svg) {
+    width: 22px;
+    height: 22px;
+    color: var(--secondary-text);
+    transition:
+      color var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+  }
 </style>

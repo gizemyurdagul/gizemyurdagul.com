@@ -54,60 +54,54 @@ import IconButton from "./IconButton.astro";
     );
   };
 
-  const bindToggle = () => {
-    const button = document.getElementById(BUTTON_ID);
-    const controller = window.__theme;
-
-    if (!button || button.dataset.bound === "true") {
-      return;
-    }
-
-    if (!controller) {
-      const handleReady = () => {
-        window.removeEventListener("themecontrollerready", handleReady);
-        bindToggle();
-      };
-      window.addEventListener("themecontrollerready", handleReady, { once: true });
-      setPressedState(button, document.documentElement.dataset.theme ?? "light");
-      return;
-    }
-
+  const connectButton = (button, controller) => {
+    if (!button || button.dataset.bound === "true") return;
     button.dataset.bound = "true";
+
+    const handleClick = () => {
+      const nextTheme = controller.get?.() === "dark" ? "light" : "dark";
+      controller.set?.(nextTheme);
+      setPressedState(button, nextTheme);
+    };
 
     const handleThemechange = (event) => {
       setPressedState(button, event.detail);
     };
 
-    button.addEventListener("click", () => {
-      const nextTheme = controller.get?.() === "dark" ? "light" : "dark";
-      controller.set?.(nextTheme);
-      setPressedState(button, nextTheme);
-    });
-
     const cleanup = () => {
       window.removeEventListener("themechange", handleThemechange);
       document.removeEventListener("astro:beforeload", cleanup);
-      window.removeEventListener("beforeunload", cleanup);
+      button.removeEventListener("click", handleClick);
     };
 
+    button.addEventListener("click", handleClick);
     window.addEventListener("themechange", handleThemechange);
     document.addEventListener("astro:beforeload", cleanup, { once: true });
-    window.addEventListener("beforeunload", cleanup, { once: true });
     setPressedState(button, controller.get?.() ?? "light");
   };
 
-  const init = () => {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", bindToggle, { once: true });
-    } else {
-      bindToggle();
+  const bindToggle = () => {
+    const button = document.getElementById(BUTTON_ID);
+    if (!button || button.dataset.bound === "true") return;
+
+    if (window.__theme) {
+      connectButton(button, window.__theme);
+      return;
     }
+
+    const handleReady = () => {
+      window.removeEventListener("themecontrollerready", handleReady);
+      bindToggle();
+    };
+
+    window.addEventListener("themecontrollerready", handleReady, {
+      once: true,
+    });
+    setPressedState(button, document.documentElement.dataset.theme ?? "light");
   };
 
-  init();
-  document.addEventListener("astro:page-load", () => {
-    requestAnimationFrame(bindToggle);
-  });
+  bindToggle();
+  document.addEventListener("astro:page-load", bindToggle);
 </script>
 
 <style>

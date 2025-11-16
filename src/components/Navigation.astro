@@ -5,142 +5,143 @@ import { siteConfig } from "../config/site";
 
 const { pathname } = Astro.url;
 const currentPath = pathname.replace(/\/+$/, "") || "/";
-const pathSegments = currentPath.split('/').filter(Boolean);
+const pathSegments = currentPath.split("/").filter(Boolean);
 const isSubPage = pathSegments.length > 1;
 const parentPath = isSubPage ? `/${pathSegments[0]}` : "";
 const { navLinks } = siteConfig;
 const parentLink = navLinks.find((link) => link.href === parentPath);
-const fallbackParentLabel =
-	pathSegments[0]
-		? `${pathSegments[0].charAt(0).toUpperCase()}${pathSegments[0].slice(1)}`
-		: 'Home';
+const fallbackParentLabel = pathSegments[0]
+  ? `${pathSegments[0].charAt(0).toUpperCase()}${pathSegments[0].slice(1)}`
+  : "Home";
 
 const linkIsActive = (href: string) => {
-	const normalizedHref = href.replace(/\/+$/, '') || '/';
-	if (normalizedHref === '/') {
-		return currentPath === '/';
-	}
+  const normalizedHref = href.replace(/\/+$/, "") || "/";
+  if (normalizedHref === "/") {
+    return currentPath === "/";
+  }
 
-	return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
+  return (
+    currentPath === normalizedHref ||
+    currentPath.startsWith(`${normalizedHref}/`)
+  );
 };
 ---
 
 <header class="navbar">
-	<nav class="nav-container" aria-label="Primary navigation">
-		{isSubPage ? (
-			<>
-				<BackButton parentPath={parentPath} />
-				<ul class="nav-links">
-					<li>
-						<a
-							class="nav-link active"
-							aria-current="page"
-							href={parentLink?.href || "/"}
-						>
-							{parentLink?.label || fallbackParentLabel}
-						</a>
-					</li>
-				</ul>
-				<ThemeToggleButton />
-			</>
-		) : (
-			<>
-				<ul class="nav-links">
-					{navLinks.map((link) => {
-						const isActive = linkIsActive(link.href);
-						return (
-							<li>
-								<a
-									class={`nav-link ${isActive ? "active" : ""}`}
-									href={link.href}
-									aria-current={isActive ? "page" : undefined}
-								>
-									{link.label}
-								</a>
-							</li>
-						);
-					})}
-				</ul>
-				<ThemeToggleButton />
-			</>
-		)}
-	</nav>
+  <nav class="nav-container" aria-label="Primary navigation">
+    {
+      isSubPage ? (
+        <>
+          <BackButton parentPath={parentPath} />
+          <ul class="nav-links">
+            <li>
+              <a
+                class="nav-link active"
+                aria-current="page"
+                href={parentLink?.href || "/"}
+              >
+                {parentLink?.label || fallbackParentLabel}
+              </a>
+            </li>
+          </ul>
+          <ThemeToggleButton />
+        </>
+      ) : (
+        <>
+          <ul class="nav-links">
+            {navLinks.map((link) => {
+              const isActive = linkIsActive(link.href);
+              return (
+                <li>
+                  <a
+                    class={`nav-link ${isActive ? "active" : ""}`}
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+          <ThemeToggleButton />
+        </>
+      )
+    }
+  </nav>
 </header>
 
 <style>
-	.navbar {
-		width: 100%;
-		max-width: 1200px;
-		display: flex;
-		justify-content: center;
-		margin-bottom: 50px;
-	}
+  .navbar {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
 
-	.nav-container {
-		display: flex;
-		align-items: center;
-		gap: 16px;
-	}
+  .nav-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 
-	.nav-links {
-		display: flex;
-		padding: 12px;
-		border-radius: 999px;
-		list-style: none;
-		margin: 0;
-		border: 1px solid #f0f0f0;
-		position: relative;
-		transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
-	}
+  .nav-links {
+    display: flex;
+    padding: 12px;
+    border-radius: 999px;
+    list-style: none;
+    margin: 0;
+    border: 1px solid #f0f0f0;
+    position: relative;
+  }
 
-	.nav-links::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: inherit;
-		background-color: var(--surface);
-		box-shadow: var(--shadow);
-		z-index: -2;
-		transition: background-color var(--transition-speed) ease;
-	}
+  .nav-links::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--surface);
+    box-shadow: var(--shadow);
+    z-index: -2;
+  }
 
-	:global(html[data-theme="dark"]) .nav-links {
-		border-color: #2c2c2c;
-	}
+  :global(html[data-theme="dark"]) .nav-links {
+    border-color: #2c2c2c;
+  }
 
-	.nav-links li a {
-		padding: 14px 28px;
-		text-decoration: none;
-		color: var(--secondary-text);
-		font-weight: 500;
-		border-radius: 999px;
-		transition: all var(--transition-speed) ease;
-		cursor: pointer;
-		position: relative;
-	}
+  .nav-links li a {
+    padding: 14px 28px;
+    text-decoration: none;
+    color: var(--secondary-text);
+    font-weight: 500;
+    border-radius: 999px;
+    transition: all var(--transition-speed) ease;
+    cursor: pointer;
+    position: relative;
+  }
 
-	.nav-links li a.active {
-          color: var(--primary-text);
-	}
+  .nav-links li a.active {
+    color: var(--primary-text);
+  }
 
-        .nav-links li a.active::after {
-		content: '';
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-                width: 100%;
-                height: 60%;
-		background: linear-gradient(90deg, var(--accent2), var(--accent1));
-                border-radius: 999px;
-		z-index: -1;
-	}
+  .nav-links li a.active::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent1));
+    border-radius: 999px;
+    z-index: -1;
+  }
 
-
-	.nav-links li a:hover {
-		color: var(--primary-text);
-	}
+  .nav-links li a:hover {
+    color: var(--primary-text);
+  }
 </style>
