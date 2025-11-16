@@ -21,14 +21,14 @@ const navLinks = [
 		{isSubPage ? (
 		    <BackButton parentPath={parentPath} />
 				<ul class="nav-links">
-				  <div class="active-indicator"></div>
+				  
                     <li><a class="nav-link active">{parentTitle}</a></li>
         </ul>
 				<ThemeToggleButton />
 		) : (
 			<>
 				<ul class="nav-links">
-					<div class="active-indicator"></div>
+					
 					{navLinks.map(link => (
 						<li><a class=`nav-link ${pathname === link.href ? 'active' : ''}` href={link.href}>{link.label}</a></li>
 					))}
@@ -39,36 +39,81 @@ const navLinks = [
 	</nav>
 </header>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const navLinks = document.querySelectorAll(".nav-link");
-    const activeIndicator = document.querySelector(".active-indicator");
-    const navList = document.querySelector(".nav-links");
+<style>
+	.navbar {
+		width: 100%;
+		max-width: 1200px;
+		display: flex;
+		justify-content: center;
+		margin-bottom: 50px;
+	}
 
-    if (navLinks.length === 0 || !activeIndicator || !navList) return;
+	.nav-container {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
 
-    function moveIndicator() {
-      const activeLink = document.querySelector(".nav-link.active");
-      if (!activeLink) return;
+	.nav-links {
+		display: flex;
+		padding: 12px;
+		border-radius: 999px;
+		list-style: none;
+		margin: 0;
+		border: 1px solid #f0f0f0;
+		position: relative;
+		transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+	}
 
-      const linkRect = activeLink.getBoundingClientRect();
-      const navListRect = navList.getBoundingClientRect();
+	.nav-links::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: inherit;
+		background-color: var(--surface);
+		box-shadow: var(--shadow);
+		z-index: -2;
+		transition: background-color var(--transition-speed) ease;
+	}
 
-      (activeIndicator as HTMLElement).style.width = `${linkRect.width}px`;
-      (activeIndicator as HTMLElement).style.left =
-        `${linkRect.left - navListRect.left}px`;
-    }
+	:global(body.dark-mode) .nav-links {
+		border-color: #2c2c2c;
+	}
 
-    // Position the indicator immediately on page load without animation.
-    moveIndicator();
+	.nav-links li a {
+		padding: 14px 28px;
+		text-decoration: none;
+		color: var(--secondary-text);
+		font-weight: 500;
+		border-radius: 999px;
+		transition: all var(--transition-speed) ease;
+		cursor: pointer;
+		position: relative;
+	}
 
-    // Enable transitions only after the initial positioning is done.
-    // A small timeout ensures the browser applies the initial styles before adding the transition.
-    setTimeout(() => {
-      activeIndicator.classList.add("transition-enabled");
-    }, 10);
+	.nav-links li a.active {
+          color: var(--primary-text);
+	}
 
-    window.addEventListener("resize", moveIndicator);
-  });
-</script>
+        .nav-links li a.active::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+                width: 100%;
+                height: 60%;
+		background: linear-gradient(90deg, var(--accent2), var(--accent1));
+                border-radius: 999px;
+		z-index: -1;
+	}
+
+
+	.nav-links li a:hover {
+		color: var(--primary-text);
+	}
+</style>
 
