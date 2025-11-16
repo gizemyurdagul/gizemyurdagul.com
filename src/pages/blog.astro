@@ -8,29 +8,43 @@ const blogPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 const { title, description } = siteConfig.sections.blog;
+
+const resolveImagePath = (imagePath?: string) => {
+  if (!imagePath) return undefined;
+  if (
+    imagePath.startsWith("http://") ||
+    imagePath.startsWith("https://") ||
+    imagePath.startsWith("//")
+  ) {
+    return imagePath;
+  }
+  if (imagePath.startsWith("/")) {
+    return imagePath;
+  }
+  return `/${imagePath.replace(/^\.?\//, "")}`;
+};
 ---
 
 <Layout title={title} description={description}>
   {
-    blogPosts.map((post) => (
-      <Card colSpan={post.data.image ? 2 : 1} rowSpan={post.data.image ? 2 : 1}>
-        {post.data.image && (
-          <img
-            src={post.data.image}
-            alt={post.data.title}
-            style="max-width: 16rem;"
-          />
-        )}
-        <h2>
-          <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
-        </h2>
-        <p style="color: var(--secondary-text); margin-top: 0;">
-          {post.data.description}
-        </p>
-        <a href={`/blog/${post.slug}/`} class="read-more">
-          Read More &rarr;
-        </a>
-      </Card>
-    ))
+    blogPosts.map((post) => {
+      const imageSrc = resolveImagePath(post.data.image);
+      return (
+        <Card colSpan={imageSrc ? 2 : 1} rowSpan={imageSrc ? 2 : 1}>
+          {imageSrc && (
+            <img src={imageSrc} alt={post.data.title} style="max-width: 16rem;" />
+          )}
+          <h2>
+            <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+          </h2>
+          <p style="color: var(--secondary-text); margin-top: 0;">
+            {post.data.description}
+          </p>
+          <a href={`/blog/${post.slug}/`} class="read-more">
+            Read More &rarr;
+          </a>
+        </Card>
+      );
+    })
   }
 </Layout>
