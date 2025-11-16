@@ -2,7 +2,7 @@
 import IconButton from "./IconButton.astro";
 ---
 
-<IconButton title="Toggle theme" id="theme-toggle">
+<IconButton title="Toggle theme" id="theme-toggle" aria-pressed="false">
   <svg
     class="sun-icon"
     xmlns="http://www.w3.org/2000/svg"
@@ -41,26 +41,72 @@ import IconButton from "./IconButton.astro";
   </svg>
 </IconButton>
 
-<script>
-  document.addEventListener("astro:page-load", () => {
-    const themeToggle = document.getElementById("theme-toggle");
+<script is:inline>
+  const BUTTON_ID = "theme-toggle";
 
-    function applySavedTheme() {
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme === "dark") {
-        document.body.classList.add("dark-mode");
-      }
+  const setPressedState = (button, theme) => {
+    if (!button) return;
+    const isDark = theme === "dark";
+    button.setAttribute("aria-pressed", isDark ? "true" : "false");
+    button.setAttribute(
+      "aria-label",
+      isDark ? "Switch to light mode" : "Switch to dark mode",
+    );
+  };
+
+  const bindToggle = () => {
+    const button = document.getElementById(BUTTON_ID);
+    const controller = window.__theme;
+
+    if (!button || button.dataset.bound === "true") {
+      return;
     }
 
-    applySavedTheme();
+    if (!controller) {
+      const handleReady = () => {
+        window.removeEventListener("themecontrollerready", handleReady);
+        bindToggle();
+      };
+      window.addEventListener("themecontrollerready", handleReady, { once: true });
+      setPressedState(button, document.documentElement.dataset.theme ?? "light");
+      return;
+    }
 
-    themeToggle?.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-      const theme = document.body.classList.contains("dark-mode")
-        ? "dark"
-        : "light";
-      localStorage.setItem("theme", theme);
+    button.dataset.bound = "true";
+
+    const handleThemechange = (event) => {
+      setPressedState(button, event.detail);
+    };
+
+    button.addEventListener("click", () => {
+      const nextTheme = controller.get?.() === "dark" ? "light" : "dark";
+      controller.set?.(nextTheme);
+      setPressedState(button, nextTheme);
     });
+
+    const cleanup = () => {
+      window.removeEventListener("themechange", handleThemechange);
+      document.removeEventListener("astro:beforeload", cleanup);
+      window.removeEventListener("beforeunload", cleanup);
+    };
+
+    window.addEventListener("themechange", handleThemechange);
+    document.addEventListener("astro:beforeload", cleanup, { once: true });
+    window.addEventListener("beforeunload", cleanup, { once: true });
+    setPressedState(button, controller.get?.() ?? "light");
+  };
+
+  const init = () => {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bindToggle, { once: true });
+    } else {
+      bindToggle();
+    }
+  };
+
+  init();
+  document.addEventListener("astro:page-load", () => {
+    requestAnimationFrame(bindToggle);
   });
 </script>
 
@@ -77,12 +123,12 @@ import IconButton from "./IconButton.astro";
     transition: transform var(--transition-speed) ease;
   }
 
-  :global(body.dark-mode) .moon-icon {
+  :global(html[data-theme="dark"]) .moon-icon {
     display: block;
     transform: rotate(0deg);
   }
 
-  :global(body.dark-mode) .sun-icon {
+  :global(html[data-theme="dark"]) .sun-icon {
     display: none;
     transform: rotate(90deg);
   }

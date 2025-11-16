@@ -1,37 +1,65 @@
 ---
 import BackButton from "./BackButton.astro";
 import ThemeToggleButton from "./ThemeToggleButton.astro";
+import { siteConfig } from "../config/site";
 
 const { pathname } = Astro.url;
-const pathSegments = pathname.split('/').filter(Boolean); // e.g., /blog/post -> ['blog', 'post']
-
+const currentPath = pathname.replace(/\/+$/, "") || "/";
+const pathSegments = currentPath.split('/').filter(Boolean);
 const isSubPage = pathSegments.length > 1;
 const parentPath = isSubPage ? `/${pathSegments[0]}` : "";
-const parentTitle = isSubPage ? pathSegments[0].charAt(0).toUpperCase() + pathSegments[0].slice(1) : "";
+const { navLinks } = siteConfig;
+const parentLink = navLinks.find((link) => link.href === parentPath);
+const fallbackParentLabel =
+	pathSegments[0]
+		? `${pathSegments[0].charAt(0).toUpperCase()}${pathSegments[0].slice(1)}`
+		: 'Home';
 
-const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/blog", label: "Blog" },
-    { href: "/projects", label: "Projects" },
-];
+const linkIsActive = (href: string) => {
+	const normalizedHref = href.replace(/\/+$/, '') || '/';
+	if (normalizedHref === '/') {
+		return currentPath === '/';
+	}
+
+	return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
+};
 ---
 
 <header class="navbar">
-	<nav class="nav-container">
+	<nav class="nav-container" aria-label="Primary navigation">
 		{isSubPage ? (
-		    <BackButton parentPath={parentPath} />
+			<>
+				<BackButton parentPath={parentPath} />
 				<ul class="nav-links">
-				  
-                    <li><a class="nav-link active">{parentTitle}</a></li>
-        </ul>
+					<li>
+						<a
+							class="nav-link active"
+							aria-current="page"
+							href={parentLink?.href || "/"}
+						>
+							{parentLink?.label || fallbackParentLabel}
+						</a>
+					</li>
+				</ul>
 				<ThemeToggleButton />
+			</>
 		) : (
 			<>
 				<ul class="nav-links">
-					
-					{navLinks.map(link => (
-						<li><a class=`nav-link ${pathname === link.href ? 'active' : ''}` href={link.href}>{link.label}</a></li>
-					))}
+					{navLinks.map((link) => {
+						const isActive = linkIsActive(link.href);
+						return (
+							<li>
+								<a
+									class={`nav-link ${isActive ? "active" : ""}`}
+									href={link.href}
+									aria-current={isActive ? "page" : undefined}
+								>
+									{link.label}
+								</a>
+							</li>
+						);
+					})}
 				</ul>
 				<ThemeToggleButton />
 			</>
@@ -79,7 +107,7 @@ const navLinks = [
 		transition: background-color var(--transition-speed) ease;
 	}
 
-	:global(body.dark-mode) .nav-links {
+	:global(html[data-theme="dark"]) .nav-links {
 		border-color: #2c2c2c;
 	}
 
@@ -116,4 +144,3 @@ const navLinks = [
 		color: var(--primary-text);
 	}
 </style>
-

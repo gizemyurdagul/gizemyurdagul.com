@@ -1,11 +1,23 @@
 ---
-const { title, onclick, id } = Astro.props;
-const extraClasses = Astro.props.class;
+const { title, onclick, id, class: extraClasses, href, ...attrs } = Astro.props;
 ---
 
-<button {id} class:list={["icon-button", extraClasses]} title={title} {onclick}>
-  <slot />
-</button>
+{href ? (
+  <a {...attrs} {id} class:list={["icon-button", extraClasses]} title={title} href={href}>
+    <slot />
+  </a>
+) : (
+  <button
+    {...attrs}
+    type="button"
+    {id}
+    class:list={["icon-button", extraClasses]}
+    title={title}
+    {onclick}
+  >
+    <slot />
+  </button>
+)}
 
 <style>
 .icon-button {
@@ -22,9 +34,10 @@ const extraClasses = Astro.props.class;
 	padding: 0;
 	transition: all var(--transition-speed) ease;
   box-sizing: border-box;
+	text-decoration: none;
 }
 
-:global(body.dark-mode) .icon-button {
+:global(html[data-theme="dark"]) .icon-button {
 	border-color: #2c2c2c;
 }
 

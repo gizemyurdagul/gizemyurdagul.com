@@ -1,0 +1,164 @@
+<script is:inline>
+		(() => {
+			const STORAGE_KEY = 'theme-preference';
+			const COOKIE_KEY = STORAGE_KEY;
+			const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
+
+		const getStorage = () => {
+			try {
+				return window.localStorage;
+			} catch {
+				return null;
+			}
+		};
+
+			const readStoredTheme = () => {
+				const storage = getStorage();
+				if (!storage) return null;
+				try {
+					return storage.getItem(STORAGE_KEY);
+			} catch {
+				return null;
+			}
+		};
+
+			const writeStoredTheme = (value) => {
+				const storage = getStorage();
+				if (!storage) return;
+				try {
+					storage.setItem(STORAGE_KEY, value);
+			} catch {
+				/* noop */
+			}
+		};
+
+			const deleteStoredTheme = () => {
+				const storage = getStorage();
+				if (!storage) return;
+				try {
+					storage.removeItem(STORAGE_KEY);
+			} catch {
+				/* noop */
+			}
+		};
+
+			const writeCookieTheme = (value) => {
+				try {
+					document.cookie = `${COOKIE_KEY}=${value}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
+				} catch {
+					/* noop */
+				}
+			};
+
+			const readCookieTheme = () => {
+				try {
+					const entry = document.cookie
+						.split('; ')
+						.find((row) => row.startsWith(`${COOKIE_KEY}=`));
+					return entry ? entry.split('=')[1] : null;
+				} catch {
+					return null;
+				}
+			};
+
+			const deleteCookieTheme = () => {
+				try {
+					document.cookie = `${COOKIE_KEY}=; path=/; max-age=0; samesite=lax`;
+				} catch {
+					/* noop */
+				}
+			};
+
+			const persistThemePreference = (value) => {
+				writeStoredTheme(value);
+				writeCookieTheme(value);
+			};
+
+			const clearThemePreference = () => {
+				deleteStoredTheme();
+				deleteCookieTheme();
+			};
+
+			const loadThemePreference = () => readStoredTheme() ?? readCookieTheme();
+
+			const applyTheme = (mode) => {
+				const root = document.documentElement;
+				const theme = mode === 'dark' ? 'dark' : 'light';
+				root.dataset.theme = theme;
+			root.style.colorScheme = theme;
+			return theme;
+		};
+
+		const dispatchThemeChange = (theme) => {
+			window.dispatchEvent(new CustomEvent('themechange', { detail: theme }));
+		};
+
+		const dispatchControllerReady = (theme) => {
+			window.dispatchEvent(new CustomEvent('themecontrollerready', { detail: theme }));
+		};
+
+		if (window.__themeControllerInitialized) {
+			return;
+		}
+		window.__themeControllerInitialized = true;
+
+		const prefersDark = window.matchMedia
+			? window.matchMedia('(prefers-color-scheme: dark)')
+			: null;
+		const resolveCurrentTheme = () =>
+			loadThemePreference() ??
+			document.documentElement.dataset.theme ??
+			(prefersDark?.matches ? 'dark' : 'light');
+		const savedTheme = loadThemePreference();
+		const initialTheme = savedTheme ?? (prefersDark?.matches ? 'dark' : 'light');
+		applyTheme(initialTheme);
+
+		const setTheme = (value, { persist = true } = {}) => {
+			const nextTheme = applyTheme(value);
+				if (persist) {
+					persistThemePreference(nextTheme);
+				}
+			dispatchThemeChange(nextTheme);
+			return nextTheme;
+		};
+
+		window.__theme = {
+			get: () => document.documentElement.dataset.theme ?? 'light',
+			set: (value) => setTheme(value),
+			toggle: () => {
+				const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+				return setTheme(next);
+			},
+			clear: () => {
+					clearThemePreference();
+				const next = prefersDark?.matches ? 'dark' : 'light';
+				return setTheme(next, { persist: false });
+			},
+		};
+
+		if (prefersDark) {
+			const handlePrefersChange = (event) => {
+				if (readStoredTheme()) {
+					return;
+				}
+				const theme = event.matches ? 'dark' : 'light';
+				setTheme(theme, { persist: false });
+			};
+
+			if (typeof prefersDark.addEventListener === 'function') {
+				prefersDark.addEventListener('change', handlePrefersChange);
+			} else if (typeof prefersDark.addListener === 'function') {
+				prefersDark.addListener(handlePrefersChange);
+			}
+		}
+
+		const reapplyTheme = () => {
+			applyTheme(resolveCurrentTheme());
+		};
+
+		document.addEventListener('astro:page-load', reapplyTheme);
+		window.addEventListener('pageshow', reapplyTheme);
+
+		dispatchControllerReady(initialTheme);
+	})();
+</script>

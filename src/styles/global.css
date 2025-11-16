@@ -8,14 +8,16 @@
 	--shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 	--border-radius: 16px;
 	--transition-speed: 0.3s;
+	color-scheme: light;
 }
 
-body.dark-mode {
+:root[data-theme="dark"] {
 	--background: #121212;
 	--surface: #1e1e1e;
 	--primary-text: #e0e0e0;
 	--secondary-text: #a0a0a0;
 	--shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	color-scheme: dark;
 }
 
 body {

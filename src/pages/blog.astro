@@ -2,11 +2,15 @@
 import { getCollection } from "astro:content";
 import Card from "../components/Card.astro";
 import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../config/site";
 
-const blogPosts = await getCollection("blog");
+const blogPosts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const { title, description } = siteConfig.sections.blog;
 ---
 
-<Layout>
+<Layout title={title} description={description}>
   {
     blogPosts.map((post) => (
       <Card colSpan={post.data.image ? 2 : 1} rowSpan={post.data.image ? 2 : 1}>
