@@ -1,0 +1,43 @@
+---
+import Card from "../Card.astro";
+---
+
+<Card>
+    <h2>Currently Reading 📚</h2>
+    <p class="book-title">
+        Atomic Habits
+    </p>
+    <div class="progress-container">
+        <div class="progress-bar-background">
+            <div class="progress-bar-foreground">
+            </div>
+        </div>
+        <small>65% complete</small>
+    </div>
+</Card>
+
+<style>
+    .book-title {
+        color: var(--secondary-text);
+        margin-top: 0;
+    }
+    .progress-container {
+        margin-top: auto;
+    }
+    .progress-bar-background {
+        background: #e9ecef;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .progress-bar-foreground {
+        background: linear-gradient(90deg, var(--accent2), var(--accent1));
+        height: 100%;
+        width: 65%;
+    }
+    small {
+        color: var(--secondary-text);
+        margin-top: 5px;
+        display: block;
+    }
+</style>

@@ -1,0 +1,33 @@
+---
+import Card from "../Card.astro";
+---
+
+<Card colSpan={2}>
+    <h2>Currently Listening 🎧</h2>
+    <p class="subtitle">
+        Latest obsession
+    </p>
+    <div class="content">
+        <p class="title">
+            Album/Podcast Name
+        </p>
+        <small>Artist/Host Name</small>
+    </div>
+</Card>
+
+<style>
+    .subtitle {
+        color: var(--secondary-text);
+        margin-top: 0;
+    }
+    .content {
+        margin-top: auto;
+    }
+    .title {
+        font-weight: 500;
+        margin: 5px 0;
+    }
+    small {
+        color: var(--secondary-text);
+    }
+</style>

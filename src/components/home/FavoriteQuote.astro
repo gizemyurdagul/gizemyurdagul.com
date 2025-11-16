@@ -1,0 +1,26 @@
+---
+import Card from "../Card.astro";
+---
+
+<Card colSpan={3}>
+    <blockquote>
+        "The best way to predict the future is to create it."
+    </blockquote>
+    <p>
+        — Peter Drucker
+    </p>
+</Card>
+
+<style>
+    blockquote {
+        font-style: italic;
+        border-left: 3px solid var(--accent1);
+        padding-left: 20px;
+        margin: 0;
+    }
+    p {
+        color: var(--secondary-text);
+        margin-top: 10px;
+        text-align: right;
+    }
+</style>

@@ -23,7 +23,9 @@ const { title = "Gizem Yurdagül - Personal Website" } = Astro.props;
   </head>
   <body>
     <Navigation />
-    <slot />
+    <main class="page-content bento-grid">
+      <slot />
+    </main>
   </body>
 </html>
 

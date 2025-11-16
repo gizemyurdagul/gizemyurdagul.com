@@ -1,0 +1,29 @@
+---
+import Card from "../Card.astro";
+---
+
+<Card rowSpan={2}>
+    <h2>Current Hobby</h2>
+    <p>
+        Exploring analog photography.
+    </p>
+    <div class="hobby-image-placeholder"></div>
+</Card>
+
+<style>
+    p {
+        color: var(--secondary-text);
+        margin-top: 0;
+    }
+    .hobby-image-placeholder {
+        width: 100%;
+        height: 200px;
+        margin-top: 15px;
+        background: #e9ecef;
+        border-radius: 10px;
+        transition: background-color var(--transition-speed) ease;
+    }
+    body.dark-mode .hobby-image-placeholder {
+        background: #2c2c2c;
+    }
+</style>
