@@ -1,12 +1,19 @@
 ---
-import Card from "../Card.astro";
+import BaseCard from "../cards/BaseCard.astro";
 ---
 
-<Card colSpan={2}>
+<BaseCard colSpan={1} rowSpan={1}>
   <h2>My Location</h2>
   <p>Currently based in Adana, Turkey.</p>
-  <div class="map-placeholder">📍</div>
-</Card>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d72933.51955672426!2d35.2652378791852!3d37.004673781639646!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15288f38a79c7193%3A0xd61674d8580bea06!2sAdana%2C%20Re%C5%9Fatbey%2C%20Seyhan%2FAdana!5e0!3m2!1sen!2str!4v1763322663546!5m2!1sen!2str"
+    width="300"
+    height="200"
+    style="border:0;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
+</BaseCard>
 
 <style>
   p {

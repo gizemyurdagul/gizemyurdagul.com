@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
+import PostLayout from "./PostLayout.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+
+interface Props {
+  entry: CollectionEntry<"blog">;
+  headings: MarkdownHeading[];
+}
+
+const { entry, headings } = Astro.props;
+const { data } = entry;
+const formattedDate = new Intl.DateTimeFormat("en", {
+  dateStyle: "long",
+}).format(data.date);
+const tags = data.tags ?? [];
+const hasSidebar = headings.length > 0 || tags.length > 0 || Boolean(data.date);
+---
+
+<PostLayout
+  title={data.title}
+  description={data.description}
+  showDescription={false}
+  sidebarPosition="left"
+>
+  <slot />
+  {hasSidebar && (
+    <TableOfContents
+      slot="sidebar"
+      headings={headings}
+      title={data.title}
+      date={formattedDate}
+      tags={tags}
+    />
+  )}
+</PostLayout>

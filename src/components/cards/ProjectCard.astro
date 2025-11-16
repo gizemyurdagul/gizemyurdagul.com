@@ -1,0 +1,83 @@
+---
+import BaseCard from "./BaseCard.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  href: string;
+  skills?: string[];
+}
+
+const { title, description, href, skills = [] } = Astro.props;
+const visibleSkills = skills.slice(0, 3);
+const remaining = skills.length - visibleSkills.length;
+---
+
+<BaseCard>
+  <div class="project-card">
+    <div class="summary">
+      <h2>
+        <a href={href}>{title}</a>
+      </h2>
+      {description && <p class="description">{description}</p>}
+    </div>
+    {
+      skills.length > 0 && (
+        <div class="skills">
+          {visibleSkills.map((skill) => (
+            <span>{skill}</span>
+          ))}
+          {remaining > 0 && <span class="more">+{remaining} more</span>}
+        </div>
+      )
+    }
+  </div>
+</BaseCard>
+
+<style>
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .summary h2 {
+    margin: 0 0 8px;
+  }
+
+  .summary h2 a {
+    color: var(--primary-text);
+    text-decoration: none;
+    transition: color var(--transition-speed) ease;
+  }
+
+  .summary h2 a:hover {
+    color: var(--accent1);
+  }
+
+  .description {
+    color: var(--secondary-text);
+    margin: 0;
+  }
+
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .skills span {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255, 106, 136, 0.12);
+    border: 1px solid rgba(255, 106, 136, 0.3);
+    font-size: 0.85rem;
+    color: var(--primary-text);
+  }
+
+  .skills .more {
+    background: transparent;
+    border-style: dashed;
+    color: var(--secondary-text);
+  }
+</style>

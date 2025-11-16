@@ -1,0 +1,101 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostLayout from "./PostLayout.astro";
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const skills = data.skills ?? [];
+const timeline = data.date;
+const hasSnapshot = Boolean(data.description || skills.length > 0 || timeline);
+---
+
+<PostLayout
+  title={data.title}
+  description={data.description}
+  showDescription={false}
+>
+  <slot />
+  {hasSnapshot && (
+    <section slot="sidebar" class="snapshot-card">
+      <h3>Project Snapshot</h3>
+      {timeline && (
+        <div class="snapshot-meta">
+          <span class="snapshot-label">Timeline</span>
+          <p>{timeline}</p>
+        </div>
+      )}
+      {data.description && <p>{data.description}</p>}
+      {skills.length > 0 && (
+        <>
+          <h4>Key Skills</h4>
+          <ul class="snapshot-skills">
+            {skills.map((skill) => (
+              <li>{skill}</li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  )}
+</PostLayout>
+
+<style>
+  .snapshot-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .snapshot-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .snapshot-card p {
+    margin: 0;
+    color: var(--secondary-text);
+    line-height: 1.6;
+  }
+
+  .snapshot-card h4 {
+    margin-bottom: 4px;
+    margin-top: 16px;
+    font-size: 1rem;
+    color: var(--secondary-text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .snapshot-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .snapshot-label {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+  }
+
+  .snapshot-skills {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .snapshot-skills li {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background-color: rgba(255, 154, 139, 0.2);
+    font-size: 0.9rem;
+  }
+</style>

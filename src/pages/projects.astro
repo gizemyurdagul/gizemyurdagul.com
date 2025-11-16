@@ -1,8 +1,8 @@
 ---
 import { getCollection } from "astro:content";
-import Card from "../components/Card.astro";
 import Layout from "../layouts/Layout.astro";
 import { siteConfig } from "../config/site";
+import ProjectCard from "../components/cards/ProjectCard.astro";
 
 const projects = (await getCollection("projects")).sort((a, b) => {
   const dateA = a.data.date ? new Date(a.data.date).valueOf() : 0;
@@ -15,19 +15,12 @@ const { title, description } = siteConfig.sections.projects;
 <Layout title={title} description={description}>
   {
     projects.map((project) => (
-      <Card>
-        <h2>
-          <a href={`/projects/${project.slug}/`}>{project.data.title}</a>
-        </h2>
-        <p style="color: var(--secondary-text);">{project.data.description}</p>
-        {project.data.tags && (
-          <div class="tags">
-            {project.data.tags.map((tag) => (
-              <span>{tag}</span>
-            ))}
-          </div>
-        )}
-      </Card>
+      <ProjectCard
+        title={project.data.title}
+        description={project.data.description}
+        href={`/projects/${project.slug}/`}
+        skills={project.data.skills}
+      />
     ))
   }
 </Layout>

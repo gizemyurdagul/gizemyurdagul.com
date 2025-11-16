@@ -1,8 +1,8 @@
 ---
-import Card from "../Card.astro";
+import BaseCard from "../cards/BaseCard.astro";
 ---
 
-<Card>
+<BaseCard>
   <h2>Currently Reading 📚</h2>
   <p class="book-title">Atomic Habits</p>
   <div class="progress-container">
@@ -11,7 +11,7 @@ import Card from "../Card.astro";
     </div>
     <small>65% complete</small>
   </div>
-</Card>
+</BaseCard>
 
 <style>
   .book-title {

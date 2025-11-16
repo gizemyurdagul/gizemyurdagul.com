@@ -1,0 +1,299 @@
+---
+import { ClientRouter } from "astro:transitions";
+import BaseHead from "../components/BaseHead.astro";
+import Navigation from "../components/Navigation.astro";
+import ThemeScript from "../components/ThemeScript.astro";
+import type { SiteConfig } from "../config/site";
+import { siteConfig } from "../config/site";
+
+export interface MetaItem {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  meta?: MetaItem[];
+  heroImage?: string;
+  heroAlt?: string;
+  typeLabel?: string;
+  tags?: string[];
+  site?: SiteConfig;
+  showDescription?: boolean;
+  sidebarPosition?: "left" | "right";
+}
+
+const {
+  title,
+  description,
+  meta = [],
+  heroImage,
+  heroAlt,
+  typeLabel,
+  tags = [],
+  site = siteConfig,
+  showDescription = true,
+  sidebarPosition = "right",
+} = Astro.props;
+
+const hasSidebarSlot = Astro.slots.has("sidebar");
+const shellClasses = [
+  "post-shell",
+  hasSidebarSlot && "post-shell--with-sidebar",
+  hasSidebarSlot && `post-shell--sidebar-${sidebarPosition}`,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title={`${title} | ${site.title}`}
+      description={description ?? site.description}
+    />
+    <ThemeScript />
+    <ClientRouter />
+  </head>
+  <body class="post-body">
+    <Navigation />
+    <main class={shellClasses}>
+      {
+        hasSidebarSlot && sidebarPosition === "left" && (
+          <aside class="post-sidebar">
+            <slot name="sidebar" />
+          </aside>
+        )
+      }
+      <article class="post-card">
+        {typeLabel && <p class="post-eyebrow">{typeLabel}</p>}
+        {
+          description && showDescription && (
+            <p class="post-description">{description}</p>
+          )
+        }
+        {
+          meta.length > 0 && (
+            <dl class="post-meta">
+              {meta.map((item) => (
+                <>
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </>
+              ))}
+            </dl>
+          )
+        }
+        {
+          tags.length > 0 && (
+            <div class="post-tags">
+              {tags.map((tag) => (
+                <span>{tag}</span>
+              ))}
+            </div>
+          )
+        }
+        {
+          heroImage && (
+            <figure class="post-hero">
+              <img src={heroImage} alt={heroAlt ?? title} loading="lazy" />
+            </figure>
+          )
+        }
+        <div class="post-content">
+          <slot />
+        </div>
+      </article>
+      {
+        hasSidebarSlot && sidebarPosition === "right" && (
+          <aside class="post-sidebar">
+            <slot name="sidebar" />
+          </aside>
+        )
+      }
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(body.post-body) {
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .post-shell {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .post-shell--with-sidebar {
+    max-width: 1100px;
+    display: grid;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .post-shell--sidebar-left {
+    grid-template-columns: minmax(220px, 260px) 1fr;
+  }
+
+  .post-shell--sidebar-right {
+    grid-template-columns: 1fr minmax(220px, 280px);
+  }
+
+  .post-card {
+    background-color: var(--surface);
+    border-radius: var(--border-radius);
+    padding: 48px;
+    box-shadow: var(--shadow);
+  }
+
+  .post-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.85rem;
+    color: var(--accent1);
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  .post-card h1 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+  }
+
+  .post-description {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: var(--secondary-text);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .post-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px 24px;
+    margin: 0 0 1.5rem;
+  }
+
+  .post-meta dt {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--secondary-text);
+    margin-bottom: 4px;
+  }
+
+  .post-meta dd {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--primary-text);
+    font-weight: 500;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .post-tags span {
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: rgba(255, 106, 136, 0.12);
+    color: var(--primary-text);
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 106, 136, 0.2);
+  }
+
+  .post-hero {
+    margin: 0 0 24px;
+    border-radius: calc(var(--border-radius) - 4px);
+    overflow: hidden;
+  }
+
+  .post-hero img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .post-content {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--primary-text);
+  }
+
+  .post-content :global(h2),
+  .post-content :global(h3) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .post-content :global(img) {
+    width: 100%;
+    border-radius: var(--border-radius);
+    margin: 2rem 0;
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin: 0 0 1.5rem 1.6rem;
+    padding-left: 1.2rem;
+    list-style-position: outside;
+  }
+
+  .post-content :global(li) {
+    margin-bottom: 0.4rem;
+  }
+
+  .post-content :global(li > ul),
+  .post-content :global(li > ol) {
+    margin-top: 0.4rem;
+    margin-left: 1rem;
+  }
+
+  .post-sidebar {
+    background-color: var(--surface);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    height: fit-content;
+  }
+
+  @media (max-width: 1023px) {
+    .post-shell--with-sidebar {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .post-shell--with-sidebar .post-sidebar {
+      position: sticky;
+      top: 40px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .post-card {
+      padding: 24px;
+    }
+  }
+</style>
+
+<style is:global>
+  @import "../styles/global.css";
+</style>

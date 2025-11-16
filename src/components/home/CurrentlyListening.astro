@@ -1,15 +1,15 @@
 ---
-import Card from "../Card.astro";
+import BaseCard from "../cards/BaseCard.astro";
 ---
 
-<Card colSpan={2}>
+<BaseCard colSpan={1}>
   <h2>Currently Listening 🎧</h2>
   <p class="subtitle">Latest obsession</p>
   <div class="content">
     <p class="title">Album/Podcast Name</p>
     <small>Artist/Host Name</small>
   </div>
-</Card>
+</BaseCard>
 
 <style>
   .subtitle {

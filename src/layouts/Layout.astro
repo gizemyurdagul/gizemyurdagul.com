@@ -1,8 +1,6 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import BaseHead from "../components/BaseHead.astro";
 import Navigation from "../components/Navigation.astro";
-import ThemeScript from "../components/ThemeScript.astro";
 import { siteConfig } from "../config/site";
 
 interface Props {
@@ -10,19 +8,13 @@ interface Props {
   description?: string;
 }
 
-const {
-  title = siteConfig.title,
-  description = siteConfig.description,
-} = Astro.props;
+const { title = siteConfig.title, description = siteConfig.description } =
+  Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <BaseHead title={title} description={description} />
-    <ThemeScript />
-    <ClientRouter />
-  </head>
+  <BaseHead title={title} description={description} />
   <body>
     <Navigation />
     <main class="page-content bento-grid">
@@ -40,20 +32,9 @@ const {
   .bento-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: masonry;
     gap: 20px;
     width: 100%;
-  }
-
-  @media (max-width: 992px) {
-    .bento-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .bento-grid {
-      grid-template-columns: 1fr;
-    }
   }
 
   @keyframes fadeIn {

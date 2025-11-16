@@ -1,44 +1,41 @@
 ---
-import Card from "../Card.astro";
+import BaseCard from "../cards/BaseCard.astro";
 ---
 
-<Card colSpan={2} rowSpan={2}>
-  <div>
-    <div class="profile-header">
-      <img
-        src="https://placehold.co/140x140/ff9a8b/ffffff?text=GY"
-        alt="Profile Picture"
-        class="profile-pic"
-      />
-      <div class="profile-info">
-        <h1>Hi, I'm Gizem Yurdagül</h1>
-        <p>Project Manager</p>
-      </div>
+<BaseCard colSpan={2} rowSpan={1}>
+  <div class="profile-header">
+    <img
+      src="https://placehold.co/140x140/ff9a8b/ffffff?text=GY"
+      alt="Profile Picture"
+      class="profile-pic"
+    />
+    <div class="profile-info">
+      <h1>Hi, I'm Gizem Yurdagül</h1>
+      <p>Project Manager</p>
     </div>
-    <p class="about-text">
-      Ar-Ge Proje Yöneticisi olarak, teknopark ve TÜBİTAK destekli girişimler de
-      dahil olmak üzere projelerin uçtan uca yaşam döngülerini yönetme konusunda
-      deneyimliyim. Proje planlama, yürütme, risk yönetimi ve paydaş iletişimi
-      konularında kanıtlanmış bir yeteneğe sahibim. Yazılım geliştirme ve teknik
-      araştırma geçmişimle, proje yönetimi ve ürün yönetimi rollerinde
-      uzmanlığımı kullanarak dinamik organizasyonlara değer katmayı
-      hedefliyorum.
-    </p>
   </div>
-</Card>
+  <p class="about-text">
+    Ar-Ge Proje Yöneticisi olarak, teknopark ve TÜBİTAK destekli girişimler de
+    dahil olmak üzere projelerin uçtan uca yaşam döngülerini yönetme konusunda
+    deneyimliyim. Proje planlama, yürütme, risk yönetimi ve paydaş iletişimi
+    konularında kanıtlanmış bir yeteneğe sahibim. Yazılım geliştirme ve teknik
+    araştırma geçmişimle, proje yönetimi ve ürün yönetimi rollerinde uzmanlığımı
+    kullanarak dinamik organizasyonlara değer katmayı hedefliyorum.
+  </p>
+</BaseCard>
 
 <style>
   .profile-header {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
   }
 
   .profile-pic {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
+    margin-right: 1rem;
     border-radius: 50%;
-    margin-right: 20px;
     object-fit: cover;
     border: 3px solid var(--surface);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -59,5 +56,6 @@ import Card from "../Card.astro";
     font-size: 1rem;
     line-height: 1.6;
     color: var(--secondary-text);
+    margin-bottom: 0;
   }
 </style>
