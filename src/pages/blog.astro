@@ -2,27 +2,206 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import { siteConfig } from "../config/site";
-import { resolveImagePath } from "../utils/images";
-import BlogCard from "../components/cards/BlogCard.astro";
 
-const blogPosts = (await getCollection("blog")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const blogPosts = (await getCollection("blog"))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map((post) => {
+    const plainBody = post.body
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+      .replace(/\[[^\]]*\]\([^)]*\)/g, "")
+      .replace(/[#>*_`-]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const excerpt = post.data.description?.trim() || `${plainBody.slice(0, 170)}...`;
+    const minutes = Math.max(1, Math.ceil(plainBody.split(/\s+/).filter(Boolean).length / 220));
+
+    return {
+      ...post,
+      excerpt,
+      readTime: `${minutes} min read`,
+      formattedDate: post.data.date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }),
+    };
+  });
+
 const { title, description } = siteConfig.sections.blog;
+
 ---
 
 <Layout title={title} description={description}>
-  {
-    blogPosts.map((post) => {
-      const imageSrc = resolveImagePath(post.data.image);
-      return (
-        <BlogCard
-          title={post.data.title}
-          description={post.data.description}
-          href={`/blog/${post.slug}/`}
-          image={imageSrc}
-        />
-      );
-    })
-  }
+  <section class="blog-page section-padding">
+    <div class="container">
+      <header class="blog-header">
+        <p class="eyebrow">Writing</p>
+        <h1>Thoughts & Observations</h1>
+        <p>
+          Essays and practical notes on project leadership, product thinking, and continuous
+          learning.
+        </p>
+      </header>
+
+      <div class="article-list">
+        {
+          blogPosts.map((post) => (
+            <a class="article-item" href={`/blog/${post.slug}/`} data-astro-prefetch>
+              <article>
+                <div class="article-header">
+                  <span class="article-date">{post.formattedDate}</span>
+                  <h2 class="article-title">{post.data.title}</h2>
+                </div>
+                <div class="article-body">
+                  <span class="article-read-time">{post.readTime}</span>
+                  <div class="article-content">
+                    <p class="article-excerpt">{post.excerpt}</p>
+                    <span class="article-link">Read Article</span>
+                  </div>
+                </div>
+              </article>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .blog-page {
+    background-color: #fff;
+  }
+
+  .blog-header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 50px;
+  }
+
+  .eyebrow {
+    color: var(--orange-500);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  .blog-header h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3vw, 3rem);
+    color: var(--slate-900);
+    margin-bottom: 14px;
+  }
+
+  .blog-header p {
+    color: var(--slate-600);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .article-item {
+    text-decoration: none;
+    border-bottom: 1px dashed var(--slate-200);
+    padding-bottom: 32px;
+  }
+
+  .article-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .article-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  @media (min-width: 640px) {
+    .article-header {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 24px;
+    }
+  }
+
+  .article-date {
+    font-size: 0.875rem;
+    color: var(--orange-500);
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .article-date {
+      width: 130px;
+    }
+  }
+
+  .article-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--slate-800);
+  }
+
+  .article-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  @media (min-width: 640px) {
+    .article-body {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 24px;
+    }
+  }
+
+  .article-read-time {
+    display: none;
+    font-size: 0.75rem;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .article-read-time {
+      display: block;
+      width: 130px;
+    }
+  }
+
+  .article-content {
+    flex: 1;
+  }
+
+  .article-excerpt {
+    color: var(--slate-600);
+    line-height: 1.6;
+    margin: 0 0 10px;
+  }
+
+  .article-link {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--slate-900);
+  }
+
+  .article-item:hover .article-title {
+    color: var(--sky-600);
+  }
+</style>

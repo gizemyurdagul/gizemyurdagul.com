@@ -1,21 +1,711 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import About from "../components/home/About.astro";
-import Location from "../components/home/Location.astro";
-import Hobby from "../components/home/Hobby.astro";
-import Social from "../components/home/Social.astro";
-import CurrentlyListening from "../components/home/CurrentlyListening.astro";
-import CurrentlyReading from "../components/home/CurrentlyReading.astro";
-import Skills from "../components/home/Skills.astro";
-import FavoriteQuote from "../components/home/FavoriteQuote.astro";
+import { getCollection } from "astro:content";
+import {
+  Anchor,
+  ArrowRight,
+  BookOpen,
+  BriefcaseBusiness,
+  ExternalLink,
+  PenTool,
+  Sun,
+} from "@lucide/astro";
+import BaseHead from "../components/BaseHead.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { siteConfig } from "../config/site";
+
+const projects = (await getCollection("projects"))
+  .sort((a, b) => {
+    const dateA = a.data.date ? new Date(a.data.date).valueOf() : 0;
+    const dateB = b.data.date ? new Date(b.data.date).valueOf() : 0;
+    return dateB - dateA;
+  })
+  .slice(0, 3);
+
+const posts = (await getCollection("blog"))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3)
+  .map((post) => {
+    const plainBody = post.body
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+      .replace(/\[[^\]]*\]\([^)]*\)/g, "")
+      .replace(/[#>*_`-]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const excerpt = post.data.description?.trim() || `${plainBody.slice(0, 165)}...`;
+    const minutes = Math.max(1, Math.ceil(plainBody.split(/\s+/).filter(Boolean).length / 220));
+
+    return {
+      ...post,
+      excerpt,
+      readTime: `${minutes} min read`,
+      formattedDate: post.data.date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }),
+    };
+  });
 ---
 
-<Layout>
-  <About />
-  <Skills />
-  <Location />
-  <Social />
-  <CurrentlyListening />
-  <CurrentlyReading />
-  <FavoriteQuote />
-</Layout>
+<!doctype html>
+<html lang="en">
+  <BaseHead title={siteConfig.title} description={siteConfig.description} />
+  <body>
+    <SiteHeader overlay={true} ctaHref="#contact" />
+
+    <section class="hero">
+      <div class="hero-bg-gradient"></div>
+      <div class="hero-blob-1"></div>
+      <div class="hero-blob-2"></div>
+
+      <div class="container hero-inner">
+        <div class="badge">
+          <Sun class="icon icon-sm icon-orange" />
+          <span>Project Manager & Research Lead</span>
+        </div>
+
+        <h1 class="hero-title">
+          Guiding projects from <br class="hidden-mobile" />
+          <span class="text-gradient">wild concepts to structured reality.</span>
+        </h1>
+
+        <p class="hero-desc">
+          I blend strategic thinking with execution discipline. I build research-backed,
+          user-centered solutions and help teams turn complexity into clear outcomes.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#work" class="btn hero-btn-primary">
+            View Portfolio <ArrowRight class="icon icon-sm" />
+          </a>
+          <a href="#writing" class="btn hero-btn-secondary">
+            <BookOpen class="icon icon-sm" /> Read my thoughts
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about section-padding">
+      <div class="container about-grid">
+        <div>
+          <h2 class="section-title">
+            <Anchor class="icon icon-lg icon-sky" />
+            The person behind the plans.
+          </h2>
+          <div class="about-text">
+            <p>
+              As an R&amp;D project manager, I lead end-to-end delivery across innovation,
+              product discovery, and process design. I focus on translating uncertainty
+              into measurable progress.
+            </p>
+            <p>
+              My background in technical research and software development helps me bridge
+              strategy, stakeholders, and delivery teams. Outside work, I enjoy learning,
+              writing, and exploring ideas that connect technology with people.
+            </p>
+          </div>
+        </div>
+        <div class="toolkit-wrapper">
+          <div class="toolkit-border"></div>
+          <div class="toolkit-box">
+            <h3 class="toolkit-title">
+              <PenTool class="icon icon-md icon-orange" /> My Toolkit
+            </h3>
+            <ul class="toolkit-list">
+              <li><span class="dot dot-sky"></span> Project & Product Strategy</li>
+              <li><span class="dot dot-orange"></span> Agile Planning & Delivery</li>
+              <li><span class="dot dot-blue"></span> User and Market Research</li>
+              <li><span class="dot dot-slate"></span> Cross-functional Leadership</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" class="portfolio section-padding">
+      <div class="container">
+        <div class="portfolio-header">
+          <h2 class="section-title">
+            <BriefcaseBusiness class="icon icon-lg icon-slate" /> Selected Work
+          </h2>
+          <span class="portfolio-note">More projects on the projects page</span>
+        </div>
+
+        <div class="portfolio-grid">
+          {
+            projects.map((project, index) => (
+              <a
+                class={`card card-${(index % 3) + 1}`}
+                href={`/projects/${project.slug}/`}
+                data-astro-prefetch
+              >
+                <div class="card-role">Project</div>
+                <h3 class="card-title">{project.data.title}</h3>
+                <p class="card-desc">{project.data.description}</p>
+                {project.data.skills?.length ? (
+                  <div class="card-tags">
+                    {project.data.skills.slice(0, 3).map((skill) => (
+                      <span class="tag">{skill}</span>
+                    ))}
+                  </div>
+                ) : null}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="writing" class="writing section-padding">
+      <div class="container">
+        <h2 class="section-title writing-title">Thoughts & Observations</h2>
+
+        <div class="article-list">
+          {
+            posts.map((post) => (
+              <a class="article-item" href={`/blog/${post.slug}/`} data-astro-prefetch>
+                <article>
+                  <div class="article-header">
+                    <span class="article-date">{post.formattedDate}</span>
+                    <h3 class="article-title">{post.data.title}</h3>
+                  </div>
+                  <div class="article-body">
+                    <span class="article-read-time">{post.readTime}</span>
+                    <div class="article-content">
+                      <p class="article-excerpt">{post.excerpt}</p>
+                      <span class="article-link">
+                        Read Article <ExternalLink class="icon icon-xs" />
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="writing-footer">
+          <a href="/blog" class="btn hero-btn-secondary btn-sm" data-astro-prefetch>
+            View all posts
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </body>
+</html>
+
+<style>
+  .hero {
+    position: relative;
+    padding-top: 160px;
+    padding-bottom: 120px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding-top: 192px;
+      padding-bottom: 128px;
+    }
+  }
+
+  .hero-bg-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, var(--orange-50), var(--sky-50), var(--slate-50));
+    z-index: -10;
+  }
+
+  .hero-blob-1,
+  .hero-blob-2 {
+    position: absolute;
+    border-radius: 50%;
+    z-index: -10;
+  }
+
+  .hero-blob-1 {
+    top: -20%;
+    left: -10%;
+    width: 50%;
+    height: 50%;
+    background-color: rgba(254, 215, 170, 0.4);
+    filter: blur(100px);
+  }
+
+  .hero-blob-2 {
+    top: 20%;
+    right: -10%;
+    width: 40%;
+    height: 60%;
+    background-color: rgba(186, 230, 253, 0.4);
+    filter: blur(120px);
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--slate-200);
+    backdrop-filter: blur(4px);
+    font-size: 0.875rem;
+    color: var(--slate-600);
+    margin-bottom: 32px;
+  }
+
+  .hero-title {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--slate-900);
+    margin-bottom: 24px;
+    max-width: 800px;
+    letter-spacing: -0.025em;
+  }
+
+  @media (min-width: 768px) {
+    .hero-title {
+      font-size: 4.5rem;
+    }
+  }
+
+  .text-gradient {
+    background-image: linear-gradient(to right, var(--orange-500), var(--sky-600));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero-desc {
+    font-size: 1.125rem;
+    color: var(--slate-600);
+    max-width: 680px;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .hero-actions {
+      flex-direction: row;
+    }
+  }
+
+  .hero-btn-primary {
+    background-color: var(--slate-900);
+    color: #fff;
+  }
+
+  .hero-btn-secondary {
+    background-color: #fff;
+    border: 1px solid var(--slate-200);
+    color: var(--slate-700);
+  }
+
+  .about {
+    background-color: #fff;
+  }
+
+  .about-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--slate-900);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .about-text {
+    color: var(--slate-600);
+    line-height: 1.8;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .toolkit-wrapper {
+    position: relative;
+  }
+
+  .toolkit-border {
+    position: absolute;
+    inset: 0;
+    border: 2px dashed var(--sky-200);
+    border-radius: 24px;
+    transform: translate(16px, 16px);
+    z-index: 1;
+  }
+
+  .toolkit-box {
+    background-color: var(--slate-50);
+    padding: 32px;
+    border-radius: 24px;
+    border: 1px solid var(--slate-100);
+    position: relative;
+    z-index: 2;
+  }
+
+  .toolkit-title {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toolkit-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--slate-700);
+  }
+
+  .toolkit-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot-sky {
+    background-color: #38bdf8;
+  }
+
+  .dot-orange {
+    background-color: var(--orange-400);
+  }
+
+  .dot-blue {
+    background-color: #2563eb;
+  }
+
+  .dot-slate {
+    background-color: var(--slate-400);
+  }
+
+  .portfolio {
+    background-color: var(--slate-50);
+  }
+
+  .portfolio-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 48px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--slate-200);
+  }
+
+  .portfolio-header .section-title {
+    margin-bottom: 0;
+  }
+
+  .portfolio-note {
+    color: var(--slate-500);
+    font-size: 0.875rem;
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .portfolio-note {
+      display: block;
+    }
+  }
+
+  .portfolio-grid {
+    display: grid;
+    gap: 24px;
+  }
+
+  @media (min-width: 768px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    text-decoration: none;
+  }
+
+  .card:hover {
+    background-color: #fff;
+    transform: translateY(-4px);
+  }
+
+  .card-1 {
+    background-color: rgba(239, 246, 255, 0.6);
+    border-color: var(--blue-200);
+  }
+
+  .card-2 {
+    background-color: rgba(240, 249, 255, 0.6);
+    border-color: var(--sky-200);
+  }
+
+  .card-3 {
+    background-color: rgba(238, 242, 255, 0.6);
+    border-color: var(--indigo-200);
+  }
+
+  .card-role {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-900);
+    margin-bottom: 12px;
+  }
+
+  .card-desc {
+    color: var(--slate-600);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .card-tags {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #fff;
+    color: var(--slate-600);
+  }
+
+  .writing {
+    background-color: #fff;
+  }
+
+  .writing-title {
+    justify-content: center;
+    margin-bottom: 48px;
+    font-size: 2.2rem;
+  }
+
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .article-item {
+    border-bottom: 1px dashed var(--slate-200);
+    padding-bottom: 32px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .article-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  @media (min-width: 640px) {
+    .article-header {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 24px;
+    }
+  }
+
+  .article-date {
+    font-size: 0.875rem;
+    color: var(--orange-500);
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .article-date {
+      width: 130px;
+    }
+  }
+
+  .article-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--slate-800);
+  }
+
+  .article-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  @media (min-width: 640px) {
+    .article-body {
+      flex-direction: row;
+      gap: 24px;
+    }
+  }
+
+  .article-read-time {
+    font-size: 0.75rem;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .article-read-time {
+      display: block;
+      width: 130px;
+    }
+  }
+
+  .article-excerpt {
+    color: var(--slate-600);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .article-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--slate-900);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .article-item:hover .article-title {
+    color: var(--sky-600);
+  }
+
+  .writing-footer {
+    text-align: center;
+    margin-top: 48px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .icon-xs {
+    width: 12px;
+    height: 12px;
+  }
+
+  .icon-sm {
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-md {
+    width: 20px;
+    height: 20px;
+  }
+
+  .icon-lg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .icon-orange {
+    color: var(--orange-400);
+  }
+
+  .icon-sky {
+    color: var(--sky-500);
+  }
+
+  .icon-slate {
+    color: var(--slate-700);
+  }
+
+  .hidden-mobile {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .hidden-mobile {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .hero-title {
+      font-size: 2.25rem;
+    }
+  }
+</style>
+
+<style is:global>
+  @import "../styles/global.css";
+</style>

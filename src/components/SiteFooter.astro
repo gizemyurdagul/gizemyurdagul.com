@@ -1,0 +1,134 @@
+---
+import { BookOpen, Github, Linkedin, Mail } from "@lucide/astro";
+---
+
+<footer id="contact" class="site-footer">
+  <div class="container site-footer__grid">
+    <div>
+      <h2 class="site-footer__title">Let's build something.</h2>
+      <p class="site-footer__desc">
+        I am open to new collaborations in project management, product strategy, and
+        research-driven delivery.
+      </p>
+      <a href="mailto:gizemyyurdagul@gmail.com" class="site-footer__btn">
+        <Mail class="site-footer__icon" /> Say Hello
+      </a>
+    </div>
+
+    <div class="site-footer__links">
+      <a href="https://www.linkedin.com/in/gizemyurdagul/" target="_blank" rel="noreferrer">
+        <Linkedin class="site-footer__icon" /> LinkedIn
+      </a>
+      <a href="https://github.com/gizemyurdagul" target="_blank" rel="noreferrer">
+        <Github class="site-footer__icon" /> GitHub
+      </a>
+      <a href="/blog" data-astro-prefetch><BookOpen class="site-footer__icon" /> Blog</a>
+    </div>
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p>&copy; {new Date().getFullYear()} Gizem Yurdagul. All rights reserved.</p>
+    <p>Designed with structure, empathy, and curiosity.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--slate-900);
+    color: var(--slate-300);
+    padding: 80px 0 38px;
+    border-top: 4px solid var(--sky-500);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: 44px;
+    margin-bottom: 56px;
+  }
+
+  .site-footer__title {
+    font-family: var(--font-serif);
+    font-size: 1.9rem;
+    margin: 0 0 16px;
+    color: #fff;
+  }
+
+  .site-footer__desc {
+    max-width: 420px;
+    color: var(--slate-400);
+    line-height: 1.65;
+    margin: 0 0 26px;
+  }
+
+  .site-footer__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--slate-900);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+
+  .site-footer__btn:hover {
+    background-color: var(--orange-50);
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .site-footer__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--slate-300);
+    transition: color 0.2s ease;
+  }
+
+  .site-footer__icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .site-footer__links a:hover {
+    color: #fff;
+  }
+
+  .site-footer__bottom {
+    border-top: 1px solid var(--slate-800);
+    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: var(--slate-500);
+    font-size: 0.875rem;
+  }
+
+  .site-footer__bottom p {
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+
+    .site-footer__links {
+      align-items: flex-end;
+    }
+
+    .site-footer__bottom {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+</style>
