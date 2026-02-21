@@ -41,7 +41,7 @@ Sayfamın en sevdiğim kısımlarından biri de biten veya yeni eklenen ürünle
 
 ## 🏗️ **Sonuç: Kendi Çözümünün Mimarı Olmak**
 
-Sonuç olarak elimdeki o karışık ürün kaosu rutinimi düzende tutmamı sağlayan kişisel bir web sayfasına dönüştü. Bu süreçte yapay zeka benim yerime kod yazan, rutinimi düzenleyen ve fikrimi elle tutulur bir sonuca ulaşmasını sağlayan bir ekip arkadaşı oldu. Umarım benim bu küçük projem sizin de kendi fikirlerinizi hayata geçirmeniz için bir ilham kaynağı olur. 
+Sonuç olarak elimdeki o karışık ürün kaosu rutinimi düzende tutmamı sağlayan kişisel bir web sayfasına dönüştü. Web sayfama göz atmak isterseniz **[buradan](https://gizemyurdagul.github.io/Skincare-App/)** ulaşabilirsiniz. Bu süreçte yapay zeka benim yerime kod yazan, rutinimi düzenleyen ve fikrimi elle tutulur bir sonuca ulaşmasını sağlayan bir ekip arkadaşı oldu. Umarım benim bu küçük projem sizin de kendi fikirlerinizi hayata geçirmeniz için bir ilham kaynağı olur. 
 
 Bu fikirle yola çıkarak hazırladığım **"Yapay Zeka Destekli Kişiselleştirilmiş Cilt Bakım Rutini Asistanı"** projeme de en kısa zamanda **[portfolyomdan](https://gizemyurdagul.com)** ulaşabilirsiniz.
 
