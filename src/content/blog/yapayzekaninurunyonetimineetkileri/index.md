@@ -5,7 +5,10 @@ date: 2023-03-29
 tags: ["Artificial Intelligence", "Product Management"]
 ---
 
+# Yapay Zekanın Ürün Yönetimine Etkileri
+
 ![](1.png)
+
 
 Merhaba arkadaşlar. Bugün sizlere yapay zekanın ürün yönetimindeki kullanım alanlarından sonrasında yapay zekayı ürün yönetiminde kullanmanın avantajlarından ve dezavantajlarından, ardından yapay zeka destekli ürün yönetimi örneklerinden son olarak yapay zeka ve ürün yönetiminin gelecekteki rolünden bahsedeceğim.
 

@@ -2,11 +2,10 @@
 title: "LEARN, UNLEARN AND RELEARN"
 description: "Bu yazımda sizlere bugün katıldığım Microfon'un Akbank Gençlik Akademisi iş birliği ile düzenlemiş olduğu Yeni Nesil Yetkinlikler ve Sürekli Öğrenme 101 eğitiminin ilk gününde, eğitmen Emre Başkan'ın anlatımından çıkarımlarımı paylaşmak istiyorum."
 date: 2025-04-10
-image: "learn-unlearn-relearn.png"
 tags: ["Learning", "Mindset", "Personal Growth"]
 ---
 
-# Learn Unlearn Relearn
+# LEARN, UNLEARN AND RELEARN
 
 Merhaba,
 
@@ -64,6 +63,10 @@ Vazgeçilen eski bilgi ve yöntemlerin yerine daha güncel, daha etkili olanlar�
 - Adaptasyon: Örneğin, klasik bir ofis programının yeni sürümünü kullanmak, farklı bir yazılım diline geçmek ya da değişen iletişim tarzlarına uyum sağlamak bu sürecin parçasıdır.
 - Bilinçli öğrenme: İlk öğrenme çoğunlukla keşfetmeye dayalı ve farkında olmadan gerçekleşirken, yeniden öğrenme süreci daha bilinçli kararlar almayı ve amaca yönelik hareket etmeyi gerektirir.
 - Gelişim etkisi: Yeniden öğrenme sayesinde birey sadece görevini yerine getiren biri olmaktan çıkar; daha hızlı karar alabilen, karmaşık süreçleri yöneten, stratejik katkılar sunabilen bir profesyonele dönüşür.
-    - Test data
 
 Relearn, bilginin üzerine ekleme değil, bazen silineni yeniden yazmaktır.
+
+![](4.png)
+
+Bu eğitimin sonunda fark ettim ki; artık sadece öğrenmek değil, değişen koşullara göre eski bilgilerimizi sorgulayıp yerlerine yenilerini koyabilmek en az ilk öğrenme kadar önemli.
+İster kariyerimizin başında olalım ister yıllardır aynı alanda çalışıyor olalım, alışkanlıklarımızı bırakmak ve yeniden öğrenmeye açık olmak bizi geleceğe hazırlayan en güçlü yetkinliklerden biri.
